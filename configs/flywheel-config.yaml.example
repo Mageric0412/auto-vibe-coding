@@ -1,0 +1,143 @@
+# Auto Vibe Coding - Configuration
+
+flywheel:
+  name: auto-vibe-coding
+  version: 1.0
+  max_iterations: 10
+  convergence_threshold: 0.95
+  self_healing: true
+
+agents:
+  max_parallel: 5
+  timeout_per_agent: 300  # seconds
+  context_budget_per_agent: 15000  # tokens
+
+  # Agent 提示词模板
+  prompts:
+    scout: |
+      你是一个问题空间探索者。
+      目标：全面理解任务上下文和约束。
+      请分析以下需求，输出：
+      1. 意图识别
+      2. 关键实体
+      3. 技术栈识别
+      4. 潜在风险
+      5. 建议的 Agent 配置
+
+    architect: |
+      你是一个资深系统架构师。
+      目标：设计可实施的解决方案。
+      请基于需求输出：
+      1. 系统架构图 (ASCII)
+      2. 核心组件
+      3. 数据流
+      4. 实施步骤
+      5. 验收标准
+
+    dev: |
+      你是一个高效的代码实现者。
+      目标：遵循架构设计实现代码。
+      要求：
+      - 编写单元测试
+      - 确保代码风格一致
+      - 记录实现决策
+
+    qa: |
+      你是一个测试工程师。
+      目标：设计全面的测试用例。
+      要求：
+      - 分析代码变更影响
+      - 设计正向/逆向/边界测试
+      - 执行现有测试套件
+
+    verifier: |
+      你是一个真伪验证者。
+      核心原则：每个发现都必须经过试图证伪的步骤。
+      只有无法被推翻的发现才确认。
+
+    fixer: |
+      你是一个自动修复者。
+      目标：最小化修改，最大化效果。
+      策略：
+      1. 最小化改动
+      2. 先测试后修复
+      3. 原子提交
+
+verification:
+  layers:
+    - name: syntax
+      enabled: true
+      timeout: 5  # seconds
+      fail_fast: true
+
+    - name: unit
+      enabled: true
+      timeout: 60
+      fail_fast: true
+
+    - name: integration
+      enabled: true
+      timeout: 180
+      fail_fast: false
+
+    - name: semantic
+      enabled: true
+      timeout: 300
+      fail_fast: false
+
+    - name: adversarial
+      enabled: true
+      timeout: 600
+      fail_fast: false
+
+  adversarial:
+    hunter_score_weight: 1.0
+    skeptic_score_weight: 1.0
+    referee_score_weight: 1.0
+    min_confidence: 0.8
+
+self_learning:
+  enabled: true
+  auto_inject_threshold: 5
+  cross_project_promotion:
+    min_projects: 2
+    min_occurrences: 5
+  permanent_rule_threshold: 10
+
+  memory:
+    path: memory
+    patterns_dir: patterns
+    failures_dir: failures
+    rules_dir: rules
+
+git:
+  auto_commit: true
+  branch_prefix: "flywheel-fix/"
+  require_human_review: true
+  commit_message_template: |
+    fix: {brief_description}
+
+    verified by flywheel system
+    findings: {finding_count}
+    confidence: {confidence}
+
+llm:
+  provider: anthropic
+  model: claude-3-5-sonnet
+  temperature: 0.3
+  max_tokens: 4096
+
+  # 备用 provider
+  fallback:
+    provider: openai
+    model: gpt-4o
+
+vector_store:
+  provider: chromadb
+  path: .vector_store
+  collection: flywheel_memory
+
+metrics:
+  enabled: true
+  export_format: prometheus
+  port: 9090
