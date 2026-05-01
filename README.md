@@ -1,75 +1,81 @@
-# Auto Vibe Coding - 多Agent飞轮自测系统
+# Auto Vibe Coding - Multi-Agent Flywheel
 
-> AI 全自动编码飞轮：多Agent协作 → 自测自验 → 智能修复 → 持续迭代
+可直接使用的 Agent / Skill 提示词，实现多Agent飞轮 "执行→自测→找问题→推翻假阳性→修复→再验证" 的闭环。
 
-## 核心特性
+## 快速使用
 
-- **多Agent协作**: Scout、Architect、Dev、QA、Verifier、Fixer 协同工作
-- **分层验证**: 5层验证体系，从语法检查到 Adversarial 挑战
-- **假阳性过滤**: Claude Code Review 同款机制，工程师误标率 < 1%
-- **自学习Pipeline**: 从错误中学习，自动生成规则
-- **自动修复闭环**: 发现 → 验证 → 修复 → 提交
-
-## 快速开始
+### 方式1: 在 Claude Code 中调用
 
 ```bash
-# 克隆项目
-cd ~/auto-vibe-coding
-
-# 初始化
-./scripts/init.sh
-
-# 运行飞轮
-./scripts/run-flywheel.sh --task "实现用户登录功能"
+cp ~/auto-vibe-coding/skills/* ~/.claude/skills/
 ```
 
-## 文档结构
-
-| 文档 | 内容 |
-|------|------|
-| [01-OVERVIEW](docs/01-OVERVIEW.md) | 系统概览 |
-| [02-ARCHITECTURE](docs/02-ARCHITECTURE.md) | 架构设计 |
-| [03-AGENTS](docs/03-AGENTS.md) | Agent 职责定义 |
-| [04-VERIFICATION](docs/04-VERIFICATION.md) | 验证策略 |
-| [05-BEST-PRACTICES](docs/05-BEST-PRACTICES.md) | Anthropic 最佳实践 |
-| [06-REFERENCE-PROJECTS](docs/06-REFERENCE-PROJECTS.md) | 参考项目 |
-| [07-IMPLEMENTATION](docs/07-IMPLEMENTATION.md) | 实施路线图 |
-
-## 架构图
-
+然后直接：
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    MULTI-AGENT FLYWHEEL SYSTEM                       │
-│                                                                     │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐        │
-│   │  Scout   │───▶│ Architect│───▶│  Dev     │───▶│  QA      │        │
-│   │  Agent   │    │  Agent   │    │  Agents  │    │  Agent   │        │
-│   └──────────┘    └──────────┘    └──────────┘    └──────────┘        │
-│        │                                            │                │
-│        │            ┌──────────┐                    │                │
-│        └───────────▶│ Verifier │◀───────────────────┘                │
-│                     │  Agent   │                                     │
-│                     └────┬─────┘                                     │
-│                          │                                           │
-│                     ┌─────▼─────┐                                    │
-│                     │  Fixer   │                                    │
-│                     │  Agent   │                                    │
-│                     └─────┬─────┘                                    │
-│                           │                                          │
-│                           ▼                                          │
-│                    [FLYWHEEL CONTINUOUS LOOP]                        │
-└─────────────────────────────────────────────────────────────────────┘
+/self-test                    # 快速自测当前代码
+/flywheel                     # 启动完整飞轮
 ```
 
-## 参考项目
+### 方式2: 复制粘贴给任何 AI
 
-| 项目 | Stars | 特点 |
-|------|-------|------|
-| [RuFlo](https://github.com/ruvnet/ruflo) | 33k | 100+Agent, 自优化 |
-| [Agent Orchestrator](https://github.com/ComposioHQ/agent-orchestrator) | 6.5k | CI/CD自愈 |
-| [Bug Hunter](https://github.com/codexstar69/bug-hunter) | 121 | 三Agent辩论 |
-| [vibecosystem](https://github.com/vibeeval/vibecosystem) | 471 | 138Agent自学习 |
-| [promptfoo](https://github.com/promptfoo/promptfoo) | 20k | LLM测试 |
+直接把文件内容粘贴给 Claude / ChatGPT / Codex / Gemini 即可。
+
+### 方式3: 使用独立 Agent
+
+把 `agents/` 下的角色提示词分别喂给不同的 Agent 实例。
+
+## 文件结构
+
+```
+auto-vibe-coding/
+├── README.md                      # 本文件
+├── FLYWHEEL.md                    # 🎯 飞轮编排者 - 先看这个
+├── agents/                        # 角色化 Agent 提示词
+│   ├── hunter.md                  # 问题猎人 - 找 bug
+│   ├── skeptic.md                 # 怀疑论者 - 推翻假阳性
+│   ├── referee.md                 # 裁判 - 终裁
+│   └── fixer.md                   # 修复者 - 修 bug
+├── skills/                        # 可调用技能
+│   ├── self-test.md               # 快速自测
+│   └── flywheel.md                # 完整飞轮
+├── examples/
+│   └── demo-session.md            # 完整执行演示
+├── configs/
+└── scripts/
+```
+
+## 核心流程
+
+```
+你的代码 → Self-Test → Hunter 找问题 → Skeptic 推翻假阳性
+                                              ↓
+                                          Referee 裁决
+                                              ↓
+                                          Fixer 修复
+                                              ↓
+                                    回到 Self-Test ──┘
+                                    （循环直到收敛）
+```
+
+## 三个关键设计
+
+1. **假阳性过滤** - 每个发现必须经过"试图证伪"步骤，参考 Claude Code Review 机制
+2. **证据驱动** - 所有声明必须有代码引用 / 测试输出 / Git 状态
+3. **收敛判定** - 连续 2 轮无新发现即停止，不是无限循环
+
+## 适用场景
+
+- PR Review 自动验证
+- Bug 修复后的自测验证
+- 功能开发完的自测
+- CI 构建失败的自动诊断修复
+
+## 参考
+
+- [Claude Code Review](https://www.anthropic.com/engineering/claude-code-review) - 多Agent 代码审查
+- [Anthropic Multi-Agent Research](https://www.anthropic.com/engineering/how-we-built-our-multi-agent-research-system) - 多Agent 研究系统
+- [Bug Hunter](https://github.com/codexstar69/bug-hunter) - 三Agent 辩论模式
+- [Agent Orchestrator](https://github.com/ComposioHQ/agent-orchestrator) - CI/CD 自愈
 
 ## License
 
