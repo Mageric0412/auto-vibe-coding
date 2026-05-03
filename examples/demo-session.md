@@ -1,5 +1,9 @@
 # Flywheel 演示：修复一个真实 Bug
 
+> 理论基础见 [METHODOLOGY.md](../METHODOLOGY.md) — MAPE飞轮 + Generator≠Evaluator + Execution Grounding
+>
+> 本演示展示了 2 轮收敛的理想情况。实际任务可能需要 3-5 轮，取决于复杂度。
+
 以下是一个完整飞轮执行演示——从发现到修复再到验证的全过程。
 
 ## 场景

@@ -29,15 +29,21 @@ cp ~/auto-vibe-coding/skills/* ~/.claude/skills/
 ```
 auto-vibe-coding/
 ├── README.md                      # 本文件
+├── METHODOLOGY.md                 # 📚 综合方法论（必读）
 ├── FLYWHEEL.md                    # 🎯 飞轮编排者 - 先看这个
 ├── agents/                        # 角色化 Agent 提示词
 │   ├── hunter.md                  # 问题猎人 - 找 bug
 │   ├── skeptic.md                 # 怀疑论者 - 推翻假阳性
 │   ├── referee.md                 # 裁判 - 终裁
-│   └── fixer.md                   # 修复者 - 修 bug
+│   ├── fixer.md                   # 修复者 - 修 bug
+│   ├── security.md                # 安全审计 - OWASP/CWE
+│   └── performance.md             # 性能分析 - 复杂度/泄漏
 ├── skills/                        # 可调用技能
 │   ├── self-test.md               # 快速自测
-│   └── flywheel.md                # 完整飞轮
+│   ├── flywheel.md                # 完整飞轮
+│   └── verify-sandbox.md          # 沙箱隔离验证
+├── references/
+│   └── PAPERS.md                  # 论文/项目索引
 ├── examples/
 │   └── demo-session.md            # 完整执行演示
 ├── configs/
@@ -57,11 +63,22 @@ auto-vibe-coding/
                                     （循环直到收敛）
 ```
 
-## 三个关键设计
+## 关键设计
 
-1. **假阳性过滤** - 每个发现必须经过"试图证伪"步骤，参考 Claude Code Review 机制
-2. **证据驱动** - 所有声明必须有代码引用 / 测试输出 / Git 状态
-3. **收敛判定** - 连续 2 轮无新发现即停止，不是无限循环
+1. **假阳性过滤** — 每个发现必须经过"试图证伪"（Skeptic+Referee），参考 Claude Code Review 机制
+2. **Execution Grounding** — 所有声明必须有可执行验证证据，不接受模型自信（AgentForge 原则）
+3. **Generator ≠ Evaluator** — 写代码和审查代码不能是同一个 Agent（CodeX-Verify + wow-harness 共识）
+4. **收敛数学** — Acc_t = Upp − α^t(Upp − Acc_0)，边际递减，5轮最优停止
+5. **强制执行层级** — Harness(100%) > Hook(80-95%) > Prompt(20-30%)
+
+## 方法论
+
+全部理论基础见 [METHODOLOGY.md](METHODOLOGY.md)：
+- MAPE飞轮模型 (Monitor→Analyze→Plan→Execute)
+- 收敛数学与最优停止策略
+- 验证金字塔 (Static→Sandbox→ModelCheck→Bounded→Empirical)
+- 两阶段检测+验证 (BitsAI-CR)
+- Sellier四层架构
 
 ## 适用场景
 

@@ -20,11 +20,16 @@
 
 在开始飞轮之前，你需要把以下内容作为你的角色系统提示词依次加载：
 
+**核心Agent**（必须）：
 1. **Flywheel Orchestrator** → 读 `FLYWHEEL.md`
 2. **Hunter Agent** → 读 `agents/hunter.md`
 3. **Skeptic Agent** → 读 `agents/skeptic.md`
 4. **Referee Agent** → 读 `agents/referee.md`
 5. **Fixer Agent** → 读 `agents/fixer.md`
+
+**专项Agent**（按需）：
+6. **Security Auditor** → 读 `agents/security.md`（涉及 auth/crypto/sensitive data 时）
+7. **Performance Profiler** → 读 `agents/performance.md`（涉及数据循环/资源管理时）
 
 ### 然后按 FLYWHEEL.md 的流程执行
 
@@ -80,8 +85,33 @@
 
 1. **每轮必须输出轮次报告**（按 FLYWHEEL.md 中的模板）
 2. **不要跳过任何步骤**——即使觉得"这轮应该没问题"
-3. **最多 5 轮**——如果 5 轮还没收敛，输出未收敛报告并暂停
+3. **最多 5 轮**——基于收敛公式 Acc_t = Upp − α^t(Upp − Acc_0)，第5轮边际增益 < 2%，不值得继续
 4. **发现 UNCERTAIN 3 次**以上就标记需要人工介入
+5. **Execution Grounding**——所有"测试通过"声明必须附带实际测试输出，不接受纯文字总结
+6. **Generator ≠ Evaluator**——修复代码后，不能由写代码的同一个 context 做审查；必须切换到 Reviewer 角色或用独立 Agent
+
+### 收敛公式
+
+```
+Acc_t = Upp − α^t × (Upp − Acc_0)
+
+典型参数: Upp=0.9, α=0.5, Acc_0=0.5
+t=1: 0.70 | t=2: 0.80 | t=3: 0.85 | t=4: 0.875 | t=5: 0.8875
+→ 5轮后边际增益 < 2%
+```
+
+### 安全/性能敏感任务
+
+如果任务涉及 auth/crypto/sensitive data：
+```
+→ 加载 agents/security.md，按 OWASP Top 10 + CWE 检查
+→ 每个 Security Finding 必须标注 CWE 编号
+```
+
+如果任务涉及数据循环/资源管理/高并发：
+```
+→ 加载 agents/performance.md，检查 N+1、复杂度、内存泄漏
+```
 
 ---
 
