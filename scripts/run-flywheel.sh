@@ -35,16 +35,19 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "🚀 Starting Flywheel..."
+echo "🚀 Flywheel - Multi-Agent Self-Testing System"
 echo "📋 Task: $TASK"
-echo "⚙️  Config: $CONFIG"
 echo ""
 
-# 运行飞轮
-poetry run python -m src.core.flywheel \
-    --task "$TASK" \
-    --config "$CONFIG" \
-    --verbose
-
+echo "This project uses prompt-based Agent/Skill files. To run the flywheel:"
 echo ""
-echo "✅ Flywheel completed!"
+echo "  1. Copy skills to Claude Code:"
+echo "     cp skills/*.md ~/.claude/skills/"
+echo ""
+echo "  2. Run in Claude Code:"
+echo "     /flywheel --task \"$TASK\""
+echo ""
+echo "  3. Or paste the prompt files to any AI agent:"
+echo "     cat FLYWHEEL.md agents/hunter.md agents/skeptic.md agents/referee.md agents/fixer.md"
+echo ""
+echo "See README.md and METHODOLOGY.md for full usage guide."

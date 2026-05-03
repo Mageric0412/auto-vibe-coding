@@ -210,13 +210,12 @@ build → OK
 ✅ Lint: 0 errors
 ✅ 构建: OK
 本轮新发现: 0
-
-→ 进入 ROUND 2 确认收敛
+已收敛1轮: 需再1轮确认 → 进入 ROUND 2
 ```
 
 ---
 
-## ROUND 2: 确认收敛
+## ROUND 2: 第一轮确认
 
 ```
 === 飞轮 Round 2 ===
@@ -224,8 +223,25 @@ build → OK
 自测: 23 passed / 0 failed ✅
 Lint: 0 errors ✅
 Hunter 扫描: 0 new findings ✅
+Skeptic 挑战: N/A (无发现)
+Referee 裁决: N/A (无争议)
+Fixer 修复: N/A (无问题)
 
-收敛判断: 连续 2 轮无变化 → **飞轮收敛** ✅
+已收敛2轮: 需再1轮确认 → 进入 ROUND 3
+```
+
+---
+
+## ROUND 3: 第二轮确认 (收敛!)
+
+```
+=== 飞轮 Round 3 ===
+
+自测: 23 passed / 0 failed ✅
+Lint: 0 errors ✅
+Hunter 扫描: 0 new findings ✅
+
+收敛判断: 连续 2 轮无变化 (R2 + R3) → **飞轮收敛** ✅
 ```
 
 ---
@@ -236,7 +252,7 @@ Hunter 扫描: 0 new findings ✅
 ## 🎯 Flywheel 飞轮终验报告
 
 ### 执行摘要
-- 总轮次: 2
+- 总轮次: 3 (R1修复 + R2确认 + R3最终确认)
 - 收敛状态: ✅ 收敛
 
 ### 变更文件
@@ -249,6 +265,7 @@ Hunter 扫描: 0 new findings ✅
 |------|------|------|------|------|
 | R1   | 3    | 2    | 2    | 1    |
 | R2   | 0    | 0    | 0    | 0    |
+| R3   | 0    | 0    | 0    | 0    |
 
 ### 最终状态
 - ✅ 测试: 23 pass / 0 fail
