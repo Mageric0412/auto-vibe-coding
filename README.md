@@ -11,8 +11,6 @@ cd auto-vibe-coding
 ./scripts/init.sh
 ```
 
-> 更新项目后重新运行 `./scripts/init.sh` 以同步最新技能。
-
 然后直接用：
 ```
 /self-test                    # 快速自测当前代码
@@ -41,10 +39,13 @@ auto-vibe-coding/
 │   ├── fixer.md                   # 修复者 - 修 bug
 │   ├── security.md                # 安全审计 - OWASP/CWE
 │   └── performance.md             # 性能分析 - 复杂度/泄漏
-├── skills/                        # 可调用技能
-│   ├── self-test.md               # 快速自测
-│   ├── flywheel.md                # 完整飞轮
-│   └── verify-sandbox.md          # 沙箱隔离验证
+├── skills/                        # Claude Code 可调用技能
+│   ├── self-test/                 # /self-test — 快速自测
+│   │   └── SKILL.md
+│   ├── flywheel/                  # /flywheel — 完整飞轮
+│   │   └── SKILL.md
+│   └── verify-sandbox/            # /verify-sandbox — 沙箱隔离验证
+│       └── SKILL.md
 ├── references/
 │   └── PAPERS.md                  # 论文/项目索引
 ├── examples/

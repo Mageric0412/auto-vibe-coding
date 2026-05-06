@@ -1,4 +1,15 @@
-# Skill: verify-sandbox
+---
+name: verify-sandbox
+description: |
+  Sandbox isolation verification. Runs code tests inside a Docker container with
+  network isolation, memory limits, CPU limits, and read-only mounts to verify
+  that agent claims about test results are reproducible — not hallucinations.
+  Falls back to temp-directory isolation when Docker is unavailable.
+  Use when asked to "sandbox verify", "run in isolation", or "verify sandbox".
+allowed-tools:
+  - Bash
+  - Read
+---
 
 ## 触发条件
 

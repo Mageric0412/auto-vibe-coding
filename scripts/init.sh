@@ -6,16 +6,22 @@ set -e
 
 echo "🚀 Initializing Auto Vibe Coding..."
 
-# 1. 复制 skills 到 Claude Code（注入项目路径）
+# 1. 符号链接 skills 目录到 Claude Code
 echo "🔗 Installing skills to ~/.claude/skills/..."
 
 mkdir -p "$HOME/.claude/skills"
 
-for skill in skills/*.md; do
-    name=$(basename "$skill")
+# 清理旧的平铺 .md 文件（如果有）
+for old in "$HOME/.claude/skills"/*.md; do
+    [ -e "$old" ] && rm -f "$old"
+done
+
+for skill_dir in skills/*/; do
+    name=$(basename "$skill_dir")
     dest="$HOME/.claude/skills/$name"
-    sed "s|__AVC_HOME__|$PWD|g" "$skill" > "$dest"
-    echo "   ✅ $name -> ~/.claude/skills/$name (paths resolved)"
+    [ -e "$dest" ] && rm -f "$dest"
+    ln -s "$PWD/$skill_dir" "$dest"
+    echo "   ✅ $name -> ~/.claude/skills/$name"
 done
 
 # 2. 复制配置文件（如果不存在）
@@ -42,6 +48,5 @@ echo "  /self-test    - Quick self-test of current code"
 echo "  /flywheel     - Start the full multi-agent flywheel"
 echo "  /verify-sandbox - Sandbox isolation verification"
 echo ""
-echo "💡 Skills installed with resolved paths. Re-run init.sh after git pull to update."
+echo "💡 Skills are symlinked to ~/.claude/skills/ — git pull updates are automatic."
 echo ""
-echo "   ./scripts/init.sh    # re-run after git pull to sync skills"

@@ -1,4 +1,35 @@
-# Skill: flywheel
+---
+name: flywheel
+description: |
+  Launch the full Multi-Agent Flywheel self-testing verification cycle.
+  Iterates through Hunter (find bugs) → Skeptic (challenge false positives) →
+  Referee (adjudicate) → Fixer (repair) rounds until convergence or max 5 rounds.
+  Uses adversarial multi-agent debate with Generator ≠ Evaluator separation.
+  Use when asked to "start flywheel", "run flywheel", "full self verify and fix",
+  or "flywheel self-test".
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Agent
+  - AskUserQuestion
+---
+
+## Preamble: 定位项目根目录
+
+先通过 symlink 找到 Auto Vibe Coding 的安装路径：
+
+```bash
+AVC_HOME=$(dirname $(dirname $(readlink -f ~/.claude/skills/flywheel 2>/dev/null || echo "$HOME/auto-vibe-coding")))
+echo "AVC_HOME=$AVC_HOME"
+```
+
+之后所有 Agent 文件都在 `$AVC_HOME` 下。
+
+---
 
 ## 触发条件
 
@@ -21,17 +52,17 @@
 在开始飞轮之前，你需要把以下内容作为你的角色系统提示词依次加载：
 
 **核心Agent**（必须）：
-1. **Flywheel Orchestrator** → 读 `__AVC_HOME__/FLYWHEEL.md`
-2. **Hunter Agent** → 读 `__AVC_HOME__/agents/hunter.md`
-3. **Skeptic Agent** → 读 `__AVC_HOME__/agents/skeptic.md`
-4. **Referee Agent** → 读 `__AVC_HOME__/agents/referee.md`
-5. **Fixer Agent** → 读 `__AVC_HOME__/agents/fixer.md`
+1. **Flywheel Orchestrator** → 读 `$AVC_HOME/FLYWHEEL.md`
+2. **Hunter Agent** → 读 `$AVC_HOME/agents/hunter.md`
+3. **Skeptic Agent** → 读 `$AVC_HOME/agents/skeptic.md`
+4. **Referee Agent** → 读 `$AVC_HOME/agents/referee.md`
+5. **Fixer Agent** → 读 `$AVC_HOME/agents/fixer.md`
 
 **专项Agent**（按需）：
-6. **Security Auditor** → 读 `__AVC_HOME__/agents/security.md`（涉及 auth/crypto/sensitive data 时）
-7. **Performance Profiler** → 读 `__AVC_HOME__/agents/performance.md`（涉及数据循环/资源管理时）
+6. **Security Auditor** → 读 `$AVC_HOME/agents/security.md`（涉及 auth/crypto/sensitive data 时）
+7. **Performance Profiler** → 读 `$AVC_HOME/agents/performance.md`（涉及数据循环/资源管理时）
 
-### 然后按 __AVC_HOME__/FLYWHEEL.md 的流程执行
+### 然后按 $AVC_HOME/FLYWHEEL.md 的流程执行
 
 ---
 
@@ -52,21 +83,21 @@
 
 ```
 [1] 修复当前已知问题（如果有上一轮的 Referee CONFIRMED 问题）
-    严格按照 __AVC_HOME__/agents/fixer.md 流程修复
+    严格按照 $AVC_HOME/agents/fixer.md 流程修复
 
 [2] 运行自测验证
-    严格按照 __AVC_HOME__/skills/self-test.md 流程
+    严格按照 $AVC_HOME/skills/self-test/SKILL.md 流程
 
 [3] Hunter 扫描
-    用 __AVC_HOME__/agents/hunter.md 的角色，逐项检查所有变更文件
+    用 $AVC_HOME/agents/hunter.md 的角色，逐项检查所有变更文件
     输出发现列表
 
 [4] Skeptic 挑战
-    用 __AVC_HOME__/agents/skeptic.md 的角色，尝试推翻每个发现
+    用 $AVC_HOME/agents/skeptic.md 的角色，尝试推翻每个发现
     输出挑战结果
 
 [5] Referee 裁决
-    用 __AVC_HOME__/agents/referee.md 的角色，对争议做出终裁
+    用 $AVC_HOME/agents/referee.md 的角色，对争议做出终裁
     输出 CONFIRMED/DISMISSED/PARTIALLY_CONFIRMED/UNCERTAIN
 
 [6] 收敛判断
@@ -83,7 +114,7 @@
 
 ### 关键约束
 
-1. **每轮必须输出轮次报告**（按 __AVC_HOME__/FLYWHEEL.md 中的模板）
+1. **每轮必须输出轮次报告**（按 $AVC_HOME/FLYWHEEL.md 中的模板）
 2. **不要跳过任何步骤**——即使觉得"这轮应该没问题"
 3. **最多 5 轮**——基于收敛公式 Acc_t = Upp − α^t(Upp − Acc_0)，第5轮边际增益 < 2%，不值得继续
 4. **发现 UNCERTAIN 3 次**以上就标记需要人工介入
@@ -104,13 +135,13 @@ t=1: 0.70 | t=2: 0.80 | t=3: 0.85 | t=4: 0.875 | t=5: 0.8875
 
 如果任务涉及 auth/crypto/sensitive data：
 ```
-→ 加载 __AVC_HOME__/agents/security.md，按 OWASP Top 10 + CWE 检查
+→ 加载 $AVC_HOME/agents/security.md，按 OWASP Top 10 + CWE 检查
 → 每个 Security Finding 必须标注 CWE 编号
 ```
 
 如果任务涉及数据循环/资源管理/高并发：
 ```
-→ 加载 __AVC_HOME__/agents/performance.md，检查 N+1、复杂度、内存泄漏
+→ 加载 $AVC_HOME/agents/performance.md，检查 N+1、复杂度、内存泄漏
 ```
 
 ---

@@ -1,4 +1,16 @@
-# Skill: self-test
+---
+name: self-test
+description: |
+  Quick self-test of current code changes. Runs git status, syntax/type checking
+  (TypeScript, Python, Go), and test suite execution against the current working tree.
+  If any step fails, escalates to the flywheel for full multi-agent verification.
+  Use when asked to "self test", "verify current code", or "check my code".
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+---
 
 ## 触发条件
 
@@ -52,7 +64,7 @@ npm test 2>&1 || npx jest 2>&1 || yarn test 2>&1 || go test ./... 2>&1 || pytest
 如果任何一步失败：
 ```
 Step 2 失败 → 先修复 lint/syntax，回到 Step 2
-Step 3 失败 → 启动完整飞轮验证（调用 verify 技能）
+Step 3 失败 → 启动完整飞轮验证（调用 /flywheel）
 ```
 
 ### Step 5: 输出报告
