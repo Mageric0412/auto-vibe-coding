@@ -11,6 +11,8 @@ cd auto-vibe-coding
 ./scripts/init.sh
 ```
 
+> 更新项目后重新运行 `./scripts/init.sh` 以同步最新技能。
+
 然后直接用：
 ```
 /self-test                    # 快速自测当前代码
