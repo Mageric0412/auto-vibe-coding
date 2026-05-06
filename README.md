@@ -7,10 +7,11 @@
 ### 方式1: 在 Claude Code 中调用
 
 ```bash
-cp ~/auto-vibe-coding/skills/* ~/.claude/skills/
+cd auto-vibe-coding
+./scripts/init.sh
 ```
 
-然后直接：
+然后直接用：
 ```
 /self-test                    # 快速自测当前代码
 /flywheel                     # 启动完整飞轮
