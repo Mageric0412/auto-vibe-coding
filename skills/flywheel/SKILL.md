@@ -23,7 +23,7 @@ allowed-tools:
 先通过 symlink 找到 Auto Vibe Coding 的安装路径：
 
 ```bash
-AVC_HOME=$(dirname $(dirname $(readlink -f ~/.claude/skills/flywheel 2>/dev/null || echo "$HOME/auto-vibe-coding")))
+AVC_HOME=$(cd "$(dirname "$(readlink ~/.claude/skills/flywheel 2>/dev/null || echo "$HOME/auto-vibe-coding/skills/flywheel")")/../.." && pwd)
 echo "AVC_HOME=$AVC_HOME"
 ```
 

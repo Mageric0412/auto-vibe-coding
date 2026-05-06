@@ -3,21 +3,10 @@
 
 set -e
 
-TASK="${1:-}"
-CONFIG="${2:-configs/flywheel-config.yaml}"
-
-if [ -z "$TASK" ]; then
-    echo "Usage: $0 --task \"your task description\" [--config config.yaml]"
-    echo ""
-    echo "Examples:"
-    echo "  $0 --task \"实现用户登录功能\""
-    echo "  $0 --task \"修复支付模块的并发问题\""
-    echo "  $0 --task \"优化数据库查询性能\""
-    exit 1
-fi
+TASK=""
+CONFIG="configs/flywheel-config.yaml"
 
 # 解析参数
-shift
 while [[ $# -gt 0 ]]; do
     case $1 in
         --task)
@@ -29,11 +18,20 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         *)
-            echo "Unknown option: $1"
-            exit 1
+            TASK="$1"
+            shift
             ;;
     esac
 done
+
+if [ -z "$TASK" ]; then
+    echo "Usage: $0 --task \"your task description\" [--config config.yaml]"
+    echo ""
+    echo "Examples:"
+    echo "  $0 --task \"实现用户登录功能\""
+    echo "  $0 \"实现用户登录功能\""
+    exit 1
+fi
 
 echo "🚀 Flywheel - Multi-Agent Self-Testing System"
 echo "📋 Task: $TASK"

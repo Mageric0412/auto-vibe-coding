@@ -19,7 +19,7 @@ done
 for skill_dir in skills/*/; do
     name=$(basename "$skill_dir")
     dest="$HOME/.claude/skills/$name"
-    [ -e "$dest" ] && rm -f "$dest"
+    [ -e "$dest" ] || [ -L "$dest" ] && rm -rf "$dest"
     ln -s "$PWD/$skill_dir" "$dest"
     echo "   ✅ $name -> ~/.claude/skills/$name"
 done
